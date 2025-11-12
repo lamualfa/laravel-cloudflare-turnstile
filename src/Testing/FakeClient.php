@@ -39,7 +39,7 @@ class FakeClient implements ClientInterface, Fake
             return SiteverifyResponse::failure(['timeout-or-duplicate']);
         }
 
-        if (! $this->shouldPass) {
+        if (!$this->shouldPass) {
             return SiteverifyResponse::failure(['invalid-input-response']);
         }
 
@@ -48,6 +48,6 @@ class FakeClient implements ClientInterface, Fake
 
     public function dummy(): string
     {
-        return self::RESPONSE_DUMMY_TOKEN;
+        return ClientInterface::RESPONSE_DUMMY_TOKEN;
     }
 }

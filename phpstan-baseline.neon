@@ -1,0 +1,10 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '''
+				#^Class RyanChandler\\LaravelCloudflareTurnstile\\Rules\\Turnstile implements deprecated interface Illuminate\\Contracts\\Validation\\Rule\:
+				see ValidationRule$#
+			'''
+			identifier: class.implementsDeprecatedInterface
+			count: 1
+			path: src/Rules/Turnstile.php

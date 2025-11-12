@@ -10,7 +10,8 @@ class Client implements ClientInterface
 {
     public function __construct(
         protected string $secret,
-    ) {}
+    ) {
+    }
 
     public function siteverify(string $response): SiteverifyResponse
     {
@@ -22,7 +23,7 @@ class Client implements ClientInterface
                 'response' => $response,
             ]);
 
-        if (! $response->ok()) {
+        if (!$response->ok()) {
             return SiteverifyResponse::success();
         }
 
@@ -31,6 +32,6 @@ class Client implements ClientInterface
 
     public function dummy(): string
     {
-        return self::RESPONSE_DUMMY_TOKEN;
+        return ClientInterface::RESPONSE_DUMMY_TOKEN;
     }
 }
