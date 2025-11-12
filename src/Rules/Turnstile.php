@@ -2,24 +2,24 @@
 
 namespace RyanChandler\LaravelCloudflareTurnstile\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Rule;
 use RyanChandler\LaravelCloudflareTurnstile\Facades\Turnstile as Facade;
 
-class Turnstile implements ValidationRule
+class Turnstile implements Rule
 {
     protected array $messages = [];
 
-    public function validate(string $attribute, mixed $value, Closure $fail): void
+    public function passes($attribute, $value): bool
     {
         $response = Facade::siteverify($value);
 
         if ($response->success) {
-            return;
+            return true;
         }
 
+        $this->messages = [];
         foreach ($response->errorCodes as $errorCode) {
-            $fail(match ($errorCode) {
+            $this->messages[] = match ($errorCode) {
                 'missing-input-secret' => __('cloudflare-turnstile::errors.missing-input-secret'),
                 'invalid-input-secret' => __('cloudflare-turnstile::errors.invalid-input-secret'),
                 'missing-input-response' => __('cloudflare-turnstile::errors.missing-input-response'),
@@ -28,7 +28,14 @@ class Turnstile implements ValidationRule
                 'timeout-or-duplicate' => __('cloudflare-turnstile::errors.timeout-or-duplicate'),
                 'internal-error' => __('cloudflare-turnstile::errors.internal-error'),
                 default => __('cloudflare-turnstile::errors.unexpected'),
-            });
+            };
         }
+
+        return false;
+    }
+
+    public function message(): string|array
+    {
+        return $this->messages;
     }
 }
