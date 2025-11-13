@@ -36,6 +36,9 @@ class Turnstile implements Rule
 
     public function message(): string|array
     {
-        return $this->messages;
+        // Return the first error message, or a default message if no specific errors
+        return empty($this->messages)
+            ? __('cloudflare-turnstile::errors.unexpected')
+            : $this->messages[0];
     }
 }
