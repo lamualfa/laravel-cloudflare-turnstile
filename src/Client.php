@@ -15,19 +15,25 @@ class Client implements ClientInterface
 
     public function siteverify(string $response): SiteverifyResponse
     {
-        $response = Http::retry(3, 100)
+        $httpResponse = Http::retry(3, 100)
             ->asForm()
             ->acceptJson()
             ->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-                'secret' => config('services.turnstile.secret'),
+                'secret' => $this->secret,
                 'response' => $response,
             ]);
 
-        if (!$response->ok()) {
+        if (!$httpResponse->ok()) {
+            return SiteverifyResponse::failure(['bad-request']);
+        }
+
+        $data = $httpResponse->json();
+
+        if ($data['success'] ?? false) {
             return SiteverifyResponse::success();
         }
 
-        return SiteverifyResponse::failure($response->json('error-codes'));
+        return SiteverifyResponse::failure($data['error-codes'] ?? ['unknown-error']);
     }
 
     public function dummy(): string
