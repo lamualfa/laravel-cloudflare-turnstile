@@ -7,9 +7,10 @@ use Illuminate\Contracts\Support\Arrayable;
 class SiteverifyResponse implements Arrayable
 {
     public function __construct(
-        public readonly bool $success,
-        public readonly array $errorCodes,
-    ) {}
+        public bool $success,
+        public array $errorCodes,
+    ) {
+    }
 
     public static function success(): self
     {
